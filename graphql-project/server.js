@@ -27,7 +27,8 @@ MongoClient.connect(MONGO_URL, (err, db) => {
         schema: mySchema,
         context: {
             db
-        }
+        },
+        graphiql: true
     }));
 
     const port = process.env.PORT || 3000;
