@@ -1,0 +1,51 @@
+#!/bin/bash
+
+typeset SCRIPT=$(basename $0)
+
+function usage()
+{
+    typeset USAGE="[USAGE]: $SCRIPT -i -s -h \n
+    i: Start/Initialize \n
+    s: Stop \n
+    h: Help/Usage \n";
+    
+    echo -e $USAGE
+}
+
+function start()
+{
+    if [[ ! -d "./data" ]]
+    then
+        mkdir data
+    fi
+    
+    mongod --bind_ip=$IP --dbpath =data --nojournal --rest & > /dev/null
+}
+
+function stop()
+{
+    ps -ef | grep mongod | awk '{print $2}' | xargs kill -9
+    
+    rm -f ./data/mongod.lock
+}
+
+if [[ $# = 0 ]]
+then
+    usage
+    exit -1;
+fi
+
+while getopts is option
+do
+    case $option in
+        i)
+            start;;
+        s)
+            stop;;
+        ?)
+            usage
+            exit -1;;
+    esac
+done
+
+exit 0
