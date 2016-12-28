@@ -19,7 +19,7 @@ function start()
         mkdir data
     fi
     
-    mongod --bind_ip=$IP --dbpath =data --nojournal --rest & > /dev/null
+    mongod --bind_ip=$IP --dbpath=data --nojournal --rest & > /dev/null
 }
 
 function stop()

@@ -1,17 +1,32 @@
-import { graphql } from 'graphql';
+import {
+    graphql
+}
+from 'graphql';
 import readline from 'readline';
 
 import mySchema from './schema/main';
 
-const rli = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+import {
+    MongoClient
+}
+from 'mongodb';
+import assert from 'assert';
 
-rli.question('Client Request:', inputQuery => {
-    graphql(mySchema, inputQuery).then(result => {
-        console.log('Server Answer :', result.data);
+const MONGO_URL = 'mongodb://localhost/test';
+
+MongoClient.connect(MONGO_URL, (err, db) => {
+    assert.equal(null, err);
+    console.log('Connected to MongoDB server');
+
+    const rli = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
     });
-    
-    rli.close();
+
+    rli.question('Client Request:', inputQuery => {
+        graphql(mySchema, inputQuery, {}, { db }).then(result => {
+            console.log('Server Answer :', result.data);
+            db.close(() => rli.close());
+        });
+    });
 });

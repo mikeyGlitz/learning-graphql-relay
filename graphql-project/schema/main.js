@@ -7,7 +7,7 @@ import {
 }
 from 'graphql';
 
-const roll = () => Math.floor(6* Math.random()) +1;
+const roll = () => Math.floor(6 * Math.random()) + 1;
 
 const queryType = new GraphQLObjectType({
     name: 'RootQuery',
@@ -17,8 +17,26 @@ const queryType = new GraphQLObjectType({
             resolve: () => 'world'
         },
         diceRoll: {
+            args: {
+                count: {
+                    type: GraphQLInt
+                }
+            },
             type: new GraphQLList(GraphQLInt),
-            resolve: () => [roll(), roll()]
+            resolve: (_, args) => {
+                const rolls = [];
+                for (let i = 0; i < args.count; i++) {
+                    rolls.push(roll());
+                }
+                return rolls;
+            }
+        },
+        usersCount: {
+            type: GraphQLInt,
+            resolve: (_, args, {
+                    db
+                }) =>
+                db.collection('users').count()
         }
     }
 });
