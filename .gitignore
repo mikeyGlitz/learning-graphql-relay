@@ -1,1 +1,3 @@
 .c9/metadata .c9/project.settings
+**/node_modules/**
+**/yarn.*
