@@ -22,6 +22,7 @@ const queryType = new GraphQLObjectType({
                     type: GraphQLInt
                 }
             },
+            description: "*** Simulate** a dice roll determined by count",
             type: new GraphQLList(GraphQLInt),
             resolve: (_, args) => {
                 const rolls = [];
@@ -32,6 +33,7 @@ const queryType = new GraphQLObjectType({
             }
         },
         usersCount: {
+            description: "Total number of users in the database",
             type: GraphQLInt,
             resolve: (_, args, {
                     db
