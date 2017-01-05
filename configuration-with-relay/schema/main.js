@@ -28,13 +28,19 @@ const QuoteType = new GraphQLObjectType({
 const queryType = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
-        usersCount: {
-            description: 'Toital number of users in the database',
-            type: GraphQLInt,
-            resolve: (_, args, {
-                db
-            }) => db.collection('users').count()
+        allQuotes: {
+            type: new GraphQLList(QuoteType),
+            description: 'A list of quotes in the database',
+            resolve: (_, args, { db }) =>
+                db.collection('quotes').find().toArray()
         }
+            // usersCount: {
+            //     description: 'Toital number of users in the database',
+            //     type: GraphQLInt,
+            //     resolve: (_, args, {
+            //         db
+            //     }) => db.collection('users').count()
+            // }
     }
 });
 
