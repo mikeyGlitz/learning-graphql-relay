@@ -1,18 +1,41 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
-class App extends Component{
+import 'whatwg-fetch';
+
+
+import Quote from './quote';
+
+class QuotesLibrary extends Component{
     constructor(props){
         super(props);
+        this.state = { allQuotes: [] };
     }
+    
     render(){
+        const quotes = this.state.allQuotes.map(quote => 
+        <Quote key={quote.id} quote={quote} />);
         return (
-            <div>
-                {this.props.greeting} World
+            <div className="quotes-list">
+                { quotes }
             </div>
         );
     }
+    
+    componentDidMount(){
+        fetch(`/graphql?query={
+                            allQuotes {
+                                id,
+                                text,
+                                author
+                            }
+                        }`)
+            .then(response => response.json())
+            .then(function(json){
+                this.setState(json.data);
+            }.bind(this))
+            .catch(ex => console.error(ex));
+    }
 }
-App.defaultProps = { greeting: 'Hello' };
 
-ReactDOM.render(<App />, document.getElementById('react'));
+ReactDOM.render(<QuotesLibrary />, document.getElementById('react'));
