@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import Relay, {
+    createContainer,
+    Route as RelayRoute,
+    RootContainer
+} from 'react-relay';
 
 import 'whatwg-fetch';
 
@@ -38,4 +43,17 @@ class QuotesLibrary extends Component{
     }
 }
 
-ReactDOM.render(<QuotesLibrary />, document.getElementById('react'));
+QuotesLibrary = createContainer(QuotesLibrary, {
+    fragments: {}
+});
+
+class AppRoute extends RelayRoute {
+    static routeName = 'App';
+}
+
+ReactDOM.render(
+    <RootContainer
+        Component={ QuotesLibrary }
+        route={ new AppRoute() } />,
+    document.getElementById('react')
+);
