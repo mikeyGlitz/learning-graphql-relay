@@ -7,9 +7,9 @@ import 'whatwg-fetch';
 import Quote from './quote';
 
 class QuotesLibrary extends Component{
+    state = { allQuotes: [] };
     constructor(props){
         super(props);
-        this.state = { allQuotes: [] };
     }
     
     render(){
