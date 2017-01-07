@@ -5,11 +5,19 @@ import Relay, {
     Route as RelayRoute,
     RootContainer
 } from 'react-relay';
-
 import 'whatwg-fetch';
 
-
 import Quote from './quote';
+
+console.log(
+    Relay.QL `query AllQuotes {
+        allQuotes{
+            id
+            text
+            author
+        }
+    }`
+);
 
 class QuotesLibrary extends Component{
     state = { allQuotes: [] };

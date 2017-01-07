@@ -33,7 +33,8 @@ MongoClient.connect(MONGO_URL, (err, db) => {
             JSON.stringify(result, null, 2)
         );
         console.info('Generated cached schema.json file');
-    });
+    })
+    .catch(console.error);
     
     app.listen(port, () => console.info(`Server running on ${port}...`));
 });
