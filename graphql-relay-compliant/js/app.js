@@ -9,24 +9,13 @@ import 'whatwg-fetch';
 
 import Quote from './quote';
 
-console.log(
-    Relay.QL `query AllQuotes {
-        allQuotes{
-            id
-            text
-            author
-        }
-    }`
-);
-
 class QuotesLibrary extends Component{
-    state = { allQuotes: [] };
     constructor(props){
         super(props);
     }
     
     render(){
-        const quotes = this.state.allQuotes.map(quote => 
+        const quotes = this.props.library.allQuotes.map(quote => 
         <Quote key={quote.id} quote={quote} />);
         return (
             <div className="quotes-list">
@@ -34,29 +23,32 @@ class QuotesLibrary extends Component{
             </div>
         );
     }
-    
-    componentDidMount(){
-        fetch(`/graphql?query={
-                            allQuotes {
-                                id,
-                                text,
-                                author
-                            }
-                        }`)
-            .then(response => response.json())
-            .then(function(json){
-                this.setState(json.data);
-            }.bind(this))
-            .catch(ex => console.error(ex));
-    }
 }
 
 QuotesLibrary = createContainer(QuotesLibrary, {
-    fragments: {}
+    fragments: {
+        library: () => Relay.QL `
+            fragment AllQuotes on QuotesLibrary {
+                allQuotes {
+                    id
+                    ${Quote.getFragment('quote')}
+                }
+            }
+        `
+    }
 });
 
 class AppRoute extends RelayRoute {
     static routeName = 'App';
+    static queries = {
+        library: (Component) => Relay.QL `
+            query QuotesLibrary {
+                quotesLibrary {
+                    ${Component.getFragment('library')}
+                }
+            }
+        `
+    }
 }
 
 ReactDOM.render(

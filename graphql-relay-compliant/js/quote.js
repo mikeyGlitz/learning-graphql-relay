@@ -1,5 +1,5 @@
 import React from 'react';
-import {createContainer} from 'react-relay';
+import Relay, {createContainer} from 'react-relay';
 
 function Quote (props){
     const {quote: {text, author} } = props;
@@ -12,5 +12,12 @@ function Quote (props){
 }
 
 export default createContainer(Quote, {
-    fragments: {}
+    fragments: {
+        quote: () => Relay.QL `
+            fragment OneQuote on Quote {
+                text
+                author
+            }
+        `
+    }
 });
