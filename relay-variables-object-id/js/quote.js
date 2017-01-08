@@ -4,7 +4,7 @@ import Relay, {createContainer} from 'react-relay';
 function Likes(props){
     return (
         <div>
-            {props.likes}
+            {props.likes}&nbsp;
             <span className="glyphicon glyphicon-thumbs-up">
             </span>
         </div>
@@ -22,11 +22,12 @@ class Quote extends Component {
     
     render(){
         const {relay, quote: {text, author} } = this.props;
+        const {showLikes} = relay.variables;
         return(
-            <blockquote onClick={ this.showLikes.bind(this) } >
+            <blockquote onClick={ this.showLikes.bind(this) } role={ !showLikes && 'button'} >
                 <p>{ text }</p>
                 <footer>{ author }</footer>
-                { relay.variables.showLikes && <Likes likes=quote.likesCount /> }
+                { showLikes && <Likes likes={ this.props.quote.likesCount } /> }
             </blockquote>
         );
     }
