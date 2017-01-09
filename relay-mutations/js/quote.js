@@ -1,14 +1,31 @@
 import React, {Component} from 'react';
 import Relay, {createContainer} from 'react-relay';
 
-function Likes(props){
-    return (
-        <div>
-            {props.likes}&nbsp;
-            <span className="glyphicon glyphicon-thumbs-up">
-            </span>
-        </div>
-    );
+import ThumbsUpMutation from './thumbs-up-mutation';
+
+class Likes extends Component{
+    thumbsUpClick(){
+        Relay.Store.commitUpdate(
+            new ThumbsUpMutation({
+                quote: this.props.quote
+            })
+        );
+    }
+    
+    constructor(props){
+        super(props);
+    }
+    
+    render(){
+        return (
+            <div>
+                {this.props.quote.likesCount}&nbsp;
+                <span className="glyphicon glyphicon-thumbs-up"
+                    onClick={this.thumbsUpClick.bind(this)}>
+                </span>
+            </div>
+        );
+    }
 }
 
 class Quote extends Component {
@@ -27,7 +44,7 @@ class Quote extends Component {
             <blockquote onClick={ this.showLikes.bind(this) } role={ !showLikes && 'button'} >
                 <p>{ text }</p>
                 <footer>{ author }</footer>
-                { showLikes && <Likes likes={ this.props.quote.likesCount } /> }
+                { showLikes && <Likes quote={ this.props.quote } /> }
             </blockquote>
         );
     }
@@ -40,6 +57,7 @@ export default createContainer(Quote, {
     fragments: {
         quote: () => Relay.QL `
             fragment OneQuote on Quote {
+                ${ThumbsUpMutation.getFragment('quote')}
                 text
                 author
                 likesCount @include(if: $showLikes)
